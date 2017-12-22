@@ -60,17 +60,19 @@ if ( is_admin() ) {
 	 */
 	function save_popular_posts_pv( $post_id ) {
 		global $wpdb;
-		$popular_key = 'popular';
 		$table       = $wpdb->prefix . 'popularposts';
 		$pageviews   = filter_input( INPUT_POST, 'popular' );
+		$popular     = wpp_get_views( $post_id );
 		$wpdb->show_errors();
-		$wpdb->update(
-			"{$table}data",
-			array( 'pageviews' => $pageviews ),
-			array( 'postid' => $post_id ),
-			array( '%d' ),
-			array( '%d' )
-		);
+		if ( $popular !== $pageviews ) {
+			$wpdb->update(
+				"{$table}data",
+				array( 'pageviews' => $pageviews ),
+				array( 'postid' => $post_id ),
+				array( '%d' ),
+				array( '%d' )
+			);
+		}
 	}
 	add_action( 'save_post', 'save_popular_posts_pv' );
 
